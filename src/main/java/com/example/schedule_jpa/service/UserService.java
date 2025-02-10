@@ -49,8 +49,13 @@ public class UserService {
         return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long id, String password) {
         User findUser = userRepository.findByIdOrElseThrow(id);
+
+        if(!findUser.getPassword().equals(password)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         userRepository.delete(findUser);
     }
 }
