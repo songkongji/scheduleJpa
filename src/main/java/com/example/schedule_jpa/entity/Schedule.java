@@ -14,6 +14,7 @@ public class Schedule extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @Setter
     private User user;
 
     @Setter
@@ -23,10 +24,6 @@ public class Schedule extends BaseEntity{
     @Setter
     @Column(nullable = false, columnDefinition = "longtext")
     private String contents;
-
-    @Setter
-    @Column(nullable = false)
-    private String userName;
 
     public Schedule(String title, String contents) {
         this.title = title;
