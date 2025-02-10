@@ -2,6 +2,7 @@ package com.example.schedule_jpa.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +16,17 @@ public class User extends BaseEntity{
 
     @Column(nullable = false)
     @Setter
+    @NotNull
     private String userName;
 
     @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @Setter
+    @NotNull
     private String email;
 
     @Column(nullable = false)
+    @NotNull
     private String password;
 
     public User() {

@@ -3,6 +3,8 @@ package com.example.schedule_jpa.service;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,5 +59,17 @@ public class UserService {
         }
 
         userRepository.delete(findUser);
+    }
+
+    public UserResponseDto login(@Email String email, String password, HttpServletRequest request) {
+        User findUser = userRepository.findByEmailOrElseThrow(email);
+
+        if(!findUser.getPassword().equals(password)){   //find 할때 이미 이메일은 검증됨
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute("Login_User", findUser);
+        return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
 }

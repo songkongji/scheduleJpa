@@ -3,6 +3,9 @@ package com.example.schedule_jpa.controller;
 import com.example.schedule_jpa.dto.userDto.UserRequestDto;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.service.UserService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +43,14 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestBody UserRequestDto requestDto){
         userService.deleteUser(id, requestDto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDto> login(
+            @Valid @ModelAttribute UserRequestDto requestDto,
+            HttpServletRequest request
+    ){
+        UserResponseDto login = userService.login(requestDto.getEmail(), requestDto.getPassword(), request);
+        return new ResponseEntity<>(login, HttpStatus.OK);
     }
 }
