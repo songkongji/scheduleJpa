@@ -1,5 +1,6 @@
 package com.example.schedule_jpa.service;
 
+import com.example.schedule_jpa.config.PasswordEncoder;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.UserRepository;
@@ -16,9 +17,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto save(String name, @Email String email, String password) {
-        User user = new User(name, email, password);
+        String encodedPassword = passwordEncoder.encode(password);
+        User user = new User(name, email, encodedPassword);
         User save = userRepository.save(user);
         return new UserResponseDto(save.getId(), save.getUserName(), save.getEmail());
     }
@@ -64,8 +67,12 @@ public class UserService {
     public UserResponseDto login(@Email String email, String password, HttpServletRequest request) {
         User findUser = userRepository.findByEmailOrElseThrow(email);
 
-        if(!findUser.getPassword().equals(password)){   //find 할때 이미 이메일은 검증됨
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        if(findUser != null){   //find 할때 이미 이메일은 검증됨
+            boolean matches = passwordEncoder.matches(password, findUser.getPassword());
+
+            if(!matches){
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
         }
 
         HttpSession session = request.getSession();
