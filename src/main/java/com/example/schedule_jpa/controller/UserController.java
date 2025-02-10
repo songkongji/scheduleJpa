@@ -2,6 +2,8 @@ package com.example.schedule_jpa.controller;
 
 import com.example.schedule_jpa.dto.userDto.UserRequestDto;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
+import com.example.schedule_jpa.groups.LoginGroup;
+import com.example.schedule_jpa.groups.SaveGroup;
 import com.example.schedule_jpa.service.UserService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/save")
-    public ResponseEntity<UserResponseDto> save(@RequestBody UserRequestDto requestUserDto){
+    public ResponseEntity<UserResponseDto> save(@Validated(SaveGroup.class) @RequestBody UserRequestDto requestUserDto){
         UserResponseDto save = userService.save(requestUserDto.getName(), requestUserDto.getEmail(), requestUserDto.getPassword());
         return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
@@ -33,7 +36,7 @@ public class UserController {
     @PatchMapping("{id}")
     public ResponseEntity<UserResponseDto> updateUser(
             @PathVariable Long id,
-            @RequestBody (required = false) UserRequestDto requestDto
+            @Valid @RequestBody (required = false) UserRequestDto requestDto
     ){
         UserResponseDto updateUser = userService.updateUser(id, requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
@@ -47,7 +50,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(
-            @Valid @ModelAttribute UserRequestDto requestDto,
+            @Validated(LoginGroup.class) @ModelAttribute UserRequestDto requestDto,
             HttpServletRequest request
     ){
         UserResponseDto login = userService.login(requestDto.getEmail(), requestDto.getPassword(), request);
