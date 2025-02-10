@@ -5,7 +5,9 @@ import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,5 +19,34 @@ public class UserService {
         User user = new User(name, email);
         User save = userRepository.save(user);
         return new UserResponseDto(save.getId(), save.getUserName(), save.getEmail());
+    }
+
+    public UserResponseDto findById(Long id) {
+        User user = userRepository.findByIdOrElseThrow(id);
+        return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
+    }
+
+    public UserResponseDto updateUser(Long id, String name, @Email String email) {
+        User findUser = userRepository.findByIdOrElseThrow(id);
+
+        if(name != null){
+            findUser.setUserName(name);
+        }
+
+        if(email != null){
+            findUser.setEmail(email);
+        }
+
+        if (name == null && email == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        userRepository.save(findUser);
+        return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
+    }
+
+    public void deleteUser(Long id) {
+        User findUser = userRepository.findByIdOrElseThrow(id);
+        userRepository.delete(findUser);
     }
 }
