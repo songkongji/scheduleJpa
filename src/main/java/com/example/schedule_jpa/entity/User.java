@@ -2,7 +2,9 @@ package com.example.schedule_jpa.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,17 +18,19 @@ public class User extends BaseEntity{
 
     @Column(nullable = false)
     @Setter
-    @NotNull
+    @NotBlank
+    @Size(min = 1, max = 20)
     private String userName;
 
     @Email
     @Column(unique = true, nullable = false)
     @Setter
-    @NotNull
+    @NotBlank
     private String email;
 
     @Column(nullable = false)
-    @NotNull
+    @NotBlank
+    @Size(min = 4, max = 20)
     private String password;
 
     public User() {
