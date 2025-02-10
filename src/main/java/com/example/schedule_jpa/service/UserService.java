@@ -37,8 +37,12 @@ public class UserService {
             findUser.setEmail(email);
         }
 
-        if ((name == null && email == null) || !password.equals(findUser.getPassword())){
+        if (name == null && email == null || password == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if(!password.equals(findUser.getPassword())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
         userRepository.save(findUser);
