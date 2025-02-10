@@ -17,7 +17,7 @@ public class UserController {
 
     @PostMapping("/save")
     public ResponseEntity<UserResponseDto> save(@RequestBody UserRequestDto requestUserDto){
-        UserResponseDto save = userService.save(requestUserDto.getName(), requestUserDto.getEmail());
+        UserResponseDto save = userService.save(requestUserDto.getName(), requestUserDto.getEmail(), requestUserDto.getPassword());
         return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
@@ -28,8 +28,11 @@ public class UserController {
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody (required = false) UserRequestDto requestDto){
-        UserResponseDto updateUser = userService.updateUser(id, requestDto.getName(), requestDto.getEmail());
+    public ResponseEntity<UserResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody (required = false) UserRequestDto requestDto
+    ){
+        UserResponseDto updateUser = userService.updateUser(id, requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 

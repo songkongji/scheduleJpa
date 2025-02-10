@@ -15,8 +15,8 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserResponseDto save(String name, @Email String email) {
-        User user = new User(name, email);
+    public UserResponseDto save(String name, @Email String email, String password) {
+        User user = new User(name, email, password);
         User save = userRepository.save(user);
         return new UserResponseDto(save.getId(), save.getUserName(), save.getEmail());
     }
@@ -26,7 +26,7 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
-    public UserResponseDto updateUser(Long id, String name, @Email String email) {
+    public UserResponseDto updateUser(Long id, String name, @Email String email, String password) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
         if(name != null){
@@ -37,7 +37,7 @@ public class UserService {
             findUser.setEmail(email);
         }
 
-        if (name == null && email == null){
+        if ((name == null && email == null) || !password.equals(findUser.getPassword())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
