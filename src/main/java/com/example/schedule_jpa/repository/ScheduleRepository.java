@@ -13,8 +13,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     default Schedule updateSchedule(Long id, String title, String contents){
         Schedule findById = findByIdOrElseThrow(id);
-        findById.setTitle(title);
-        findById.setContents(contents);
+        if(title != null){
+            findById.setTitle(title);
+        }
+        if(contents != null) {
+            findById.setContents(contents);
+        }
+        if(title == null && contents == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         save(findById);
         return findById;
     }
