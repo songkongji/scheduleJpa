@@ -1,6 +1,6 @@
 package com.example.schedule_jpa.service;
 
-import com.example.schedule_jpa.dto.UserResponseDto;
+import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.validation.constraints.Email;

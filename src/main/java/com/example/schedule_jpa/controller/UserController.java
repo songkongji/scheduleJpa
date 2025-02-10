@@ -1,7 +1,7 @@
 package com.example.schedule_jpa.controller;
 
-import com.example.schedule_jpa.dto.UserRequestDto;
-import com.example.schedule_jpa.dto.UserResponseDto;
+import com.example.schedule_jpa.dto.userDto.UserRequestDto;
+import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

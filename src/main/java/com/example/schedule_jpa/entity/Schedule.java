@@ -16,9 +16,11 @@ public class Schedule extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Setter
     @Column(nullable = false)
     private String title;
 
+    @Setter
     @Column(nullable = false, columnDefinition = "longtext")
     private String contents;
 
