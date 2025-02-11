@@ -1,5 +1,6 @@
 package com.example.schedule_jpa.service;
 
+import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.config.PasswordEncoder;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
@@ -76,7 +77,7 @@ public class UserService {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute("Login_User", findUser);
+        session.setAttribute(Const.LOGIN_USER, findUser);
         return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
 

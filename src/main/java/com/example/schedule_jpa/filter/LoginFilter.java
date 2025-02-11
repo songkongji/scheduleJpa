@@ -1,5 +1,6 @@
 package com.example.schedule_jpa.filter;
 
+import com.example.schedule_jpa.Common.Const;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public class LoginFilter implements Filter {
         if(!isWhiteList(requestURI)){
             HttpSession session = httpRequest.getSession(false);
 
-            if(session == null || session.getAttribute("Login_User") == null){
+            if(session == null || session.getAttribute(Const.LOGIN_USER) == null){
                 throw new RuntimeException("로그인 하셈");
             }
         }

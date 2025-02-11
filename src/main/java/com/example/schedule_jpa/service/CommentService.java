@@ -46,9 +46,11 @@ public class CommentService {
                 .collect(Collectors.toList());  //comments의 각 요소를 List<responseDto> 에 대입하는 스트림 메서드
     }
 
-    public CommentResponseDto update(Long id, String contents, Long scheduleId) {
+    public CommentResponseDto update(Long id, Long userId, String contents, Long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
+
+        verifyUser(userId, comment.getUser().getId());
 
         validComment(comment.getSchedule().getId(), schedule.getId());
 
@@ -68,6 +70,12 @@ public class CommentService {
     private void validComment(Long commentOnScheduleId, Long scheduleId){   //내가 댓글을 단 일정이 맞는가
         if(commentOnScheduleId != scheduleId){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void verifyUser(Long userId, Long userIdFromComment){  //해당 댓글을 작성한 유저가 맞는가?
+        if(userId != userIdFromComment){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
 }

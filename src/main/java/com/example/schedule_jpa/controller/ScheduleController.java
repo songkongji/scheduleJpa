@@ -1,5 +1,6 @@
 package com.example.schedule_jpa.controller;
 
+import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.dto.scheduleDto.ScheduleRequestDto;
 import com.example.schedule_jpa.dto.scheduleDto.ScheduleResponseDto;
 import com.example.schedule_jpa.dto.scheduleDto.UpdateScheduleRequestDto;
@@ -37,13 +38,13 @@ public class ScheduleController {
             @Valid @RequestBody (required = false) UpdateScheduleRequestDto requestDto,
             HttpSession session
     ){
-        ScheduleResponseDto updateSchedule = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents(), (User) session.getAttribute("Login_User"));
+        ScheduleResponseDto updateSchedule = scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getContents(), (User) session.getAttribute(Const.LOGIN_USER));
         return new ResponseEntity<>(updateSchedule, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, HttpSession session){
-        User loginUser = (User) session.getAttribute("Login_User");
+        User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
         scheduleService.deleteSchedule(id, loginUser.getId());
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -13,7 +13,5 @@ public class CommentRequestDto {
     @Size(min = 1, max = 100)
     private final String contents;
     @NotNull
-    private final Long userId;
-    @NotNull
     private final Long scheduleId;
 }
