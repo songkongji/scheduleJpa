@@ -8,7 +8,9 @@ import com.example.schedule_jpa.repository.CommentRepository;
 import com.example.schedule_jpa.repository.ScheduleRepository;
 import com.example.schedule_jpa.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,8 +34,8 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> findByScheduleId(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId); //여기서 검증 됌
-        List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId); //여기서 존재하는 일정인지 검증
+        List<Comment> comments = commentRepository.findAllByScheduleId(schedule.getId()); //검증 된 id 값을 넣음
         return comments.stream()
                 .map(comment -> new CommentResponseDto(
                         comment.getId(),
@@ -41,6 +43,19 @@ public class CommentService {
                         comment.getUser().getId(),
                         comment.getSchedule().getId()
                 ))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  //comments의 각 요소를 List<responseDto> 에 대입하는 스트림 메서드
+    }
+
+    public CommentResponseDto update(Long id, String contents, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        Comment comment = commentRepository.findByIdOrElseThrow(id);
+
+        if(schedule.getId() != comment.getSchedule().getId()){  //내가 댓글을 단 일정이 맞는가?
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        comment.setContents(contents);
+        commentRepository.save(comment);
+        return new CommentResponseDto(comment.getId(), comment.getContents(), comment.getUser().getId(), comment.getSchedule().getId());
     }
 }
