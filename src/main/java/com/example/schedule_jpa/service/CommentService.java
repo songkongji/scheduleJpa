@@ -51,7 +51,6 @@ public class CommentService {
         Comment comment = commentRepository.findByIdOrElseThrow(id);
 
         verifyUser(userId, comment.getUser().getId());
-
         validComment(comment.getSchedule().getId(), schedule.getId());
 
         comment.setContents(contents);
@@ -59,9 +58,11 @@ public class CommentService {
         return new CommentResponseDto(comment.getId(), comment.getContents(), comment.getUser().getId(), comment.getSchedule().getId());
     }
 
-    public void delete(Long id, Long scheduleId) {
+    public void delete(Long id, Long scheduleId, Long userId) {
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
+
+        verifyUser(userId, comment.getUser().getId());
         validComment(comment.getSchedule().getId(), schedule.getId());
 
         commentRepository.delete(comment);
