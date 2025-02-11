@@ -22,4 +22,4 @@
 |로그인|POST|/users/login|요청 form|로그인 정보|200: 정상 로그인|
 
 ## ERD
-![Image](https://github.com/user-attachments/assets/9e32918e-8775-4308-8a4c-148286f350f7)
+![Image](https://github.com/user-attachments/assets/4af5a0e2-4959-4c65-b8e9-c362697e8eef)
