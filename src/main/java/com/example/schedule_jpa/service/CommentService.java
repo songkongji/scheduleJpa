@@ -50,12 +50,24 @@ public class CommentService {
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
 
-        if(schedule.getId() != comment.getSchedule().getId()){  //내가 댓글을 단 일정이 맞는가?
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        validComment(comment.getSchedule().getId(), schedule.getId());
 
         comment.setContents(contents);
         commentRepository.save(comment);
         return new CommentResponseDto(comment.getId(), comment.getContents(), comment.getUser().getId(), comment.getSchedule().getId());
+    }
+
+    public void delete(Long id, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+        Comment comment = commentRepository.findByIdOrElseThrow(id);
+        validComment(comment.getSchedule().getId(), schedule.getId());
+
+        commentRepository.delete(comment);
+    }
+
+    private void validComment(Long commentOnScheduleId, Long scheduleId){   //내가 댓글을 단 일정이 맞는가
+        if(commentOnScheduleId != scheduleId){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 }
