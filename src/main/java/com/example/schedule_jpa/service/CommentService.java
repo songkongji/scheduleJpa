@@ -7,14 +7,14 @@ import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.CommentRepository;
 import com.example.schedule_jpa.repository.ScheduleRepository;
 import com.example.schedule_jpa.repository.UserRepository;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -29,5 +29,18 @@ public class CommentService {
         comment.setSchedule(schedule);
         Comment save = commentRepository.save(comment);
         return new CommentResponseDto(save.getId(), save.getContents(), save.getUser().getId(), save.getSchedule().getId());
+    }
+
+    public List<CommentResponseDto> findByScheduleId(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId); //여기서 검증 됌
+        List<Comment> comments = commentRepository.findByScheduleId(schedule.getId());
+        return comments.stream()
+                .map(comment -> new CommentResponseDto(
+                        comment.getId(),
+                        comment.getContents(),
+                        comment.getUser().getId(),
+                        comment.getSchedule().getId()
+                ))
+                .collect(Collectors.toList());
     }
 }
