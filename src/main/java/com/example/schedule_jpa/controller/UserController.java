@@ -56,4 +56,10 @@ public class UserController {
         UserResponseDto login = userService.login(requestDto.getEmail(), requestDto.getPassword(), request);
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request){
+        userService.logout(request.getSession(false));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

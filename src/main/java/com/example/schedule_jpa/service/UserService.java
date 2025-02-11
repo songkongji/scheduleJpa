@@ -79,4 +79,10 @@ public class UserService {
         session.setAttribute("Login_User", findUser);
         return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
+
+    public void logout(HttpSession session) {
+        if(session != null){
+            session.invalidate();
+        }
+    }
 }

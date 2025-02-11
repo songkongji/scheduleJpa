@@ -5,8 +5,11 @@ import com.example.schedule_jpa.entity.Schedule;
 import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.ScheduleRepository;
 import com.example.schedule_jpa.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +31,9 @@ public class ScheduleService {
         return new ScheduleResponseDto(findSchedule.getId(), findSchedule.getTitle(), findSchedule.getContents(), findSchedule.getUser().getId());
     }
 
-    public ScheduleResponseDto updateSchedule(Long id, String title, String contents) {
-        Schedule schedule = scheduleRepository.updateSchedule(id, title, contents);
+    public ScheduleResponseDto updateSchedule(Long id, String title, String contents, User user) {
+        Long userId = user.getId();
+        Schedule schedule = scheduleRepository.updateSchedule(id, title, contents, userId);
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents(), schedule.getUser().getId());
     }
 

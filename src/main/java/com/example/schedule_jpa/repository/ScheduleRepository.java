@@ -11,8 +11,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
         return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    default Schedule updateSchedule(Long id, String title, String contents){
+    default Schedule updateSchedule(Long id, String title, String contents, Long userId){
         Schedule findById = findByIdOrElseThrow(id);
+
+        if(findById.getUser().getId() != userId){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
 
         if(title != null){
             findById.setTitle(title);

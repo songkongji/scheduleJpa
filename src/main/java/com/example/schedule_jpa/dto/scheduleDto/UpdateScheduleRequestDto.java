@@ -1,5 +1,6 @@
 package com.example.schedule_jpa.dto.scheduleDto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -14,4 +15,6 @@ public class UpdateScheduleRequestDto {
     private final String title;
     @Size(min = 1)
     private final String contents;
+    @Email
+    private final String email;
 }
