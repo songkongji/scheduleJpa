@@ -37,8 +37,13 @@ public class ScheduleService {
         return new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getContents(), schedule.getUser().getId());
     }
 
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long id, Long userId) {
         Schedule findById = scheduleRepository.findByIdOrElseThrow(id);
+
+        if(userId != findById.getUser().getId()){ //일정을 만든 본인만 해당 일정 삭제
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         scheduleRepository.delete(findById);
     }
 }
