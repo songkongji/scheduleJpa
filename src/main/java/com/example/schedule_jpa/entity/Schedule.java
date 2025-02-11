@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 public class Schedule extends BaseEntity{
@@ -24,6 +27,9 @@ public class Schedule extends BaseEntity{
     @Setter
     @Column(nullable = false, columnDefinition = "longtext")
     private String contents;
+
+    @OneToMany(mappedBy = "schedule")
+    private List<Comment> comments = new ArrayList<>();
 
     public Schedule(String title, String contents) {
         this.title = title;

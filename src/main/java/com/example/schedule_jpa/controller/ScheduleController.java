@@ -1,6 +1,7 @@
 package com.example.schedule_jpa.controller;
 
 import com.example.schedule_jpa.Common.Const;
+import com.example.schedule_jpa.dto.scheduleDto.PageScheduleResponseDto;
 import com.example.schedule_jpa.dto.scheduleDto.ScheduleRequestDto;
 import com.example.schedule_jpa.dto.scheduleDto.ScheduleResponseDto;
 import com.example.schedule_jpa.dto.scheduleDto.UpdateScheduleRequestDto;
@@ -9,6 +10,10 @@ import com.example.schedule_jpa.service.ScheduleService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +52,16 @@ public class ScheduleController {
         User loginUser = (User) session.getAttribute(Const.LOGIN_USER);
         scheduleService.deleteSchedule(id, loginUser.getId());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PageScheduleResponseDto>> schedulePage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PageScheduleResponseDto> schedulePage = scheduleService.getSchedulePage(pageable);
+        return new ResponseEntity<>(schedulePage, HttpStatus.OK);
     }
 
 }
