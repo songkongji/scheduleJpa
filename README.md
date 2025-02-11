@@ -24,8 +24,8 @@
 ### 댓글 API
 | API 기능   | Method | URL                            |request| response |상태코드|
 |----------|--------|--------------------------------|------|----------|------|
-| 댓글 등록    | POST   | /comments/save                 |요청 body| 등록 정보    |201: 정상 등록|
-| 댓글 목록 조회 | GET    | /comments/{id}                 |요청 param| 다건 응답 정보 |200: 정상 조회|
+| 댓글 등록    | POST   | /comments                      |요청 body| 등록 정보    |201: 정상 등록|
+| 댓글 목록 조회 | GET    | /comments/{scheduleId}         |요청 param| 다건 응답 정보 |200: 정상 조회|
 | 댓글 수정    | PUT    | /comments/{id}                 |요청 body| 수정 정보    |200: 정상 수정|
 | 댓글 삭제    | DELETE | /comments/{id}?scheduleId={id} |요청 param| -        |200: 정상 삭제|
 
