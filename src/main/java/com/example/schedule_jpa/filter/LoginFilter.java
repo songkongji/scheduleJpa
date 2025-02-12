@@ -35,7 +35,7 @@ public class LoginFilter implements Filter {
             chain.doFilter(request, response);
         } catch (CustomException e) {
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpResponse.setContentType("text/plain; charset=UTF-8");
+            httpResponse.setContentType("text/plain; charset=UTF-8");//프론트엔드를 위해 json 형식으로 컨텐트 타입 보내주자
             httpResponse.setCharacterEncoding("UTF-8");
             httpResponse.getWriter().write("로그인이 필요하다. " + e.getMessage());
         } catch (Exception e){

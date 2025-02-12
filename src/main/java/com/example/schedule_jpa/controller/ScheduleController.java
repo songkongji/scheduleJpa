@@ -58,7 +58,7 @@ public class ScheduleController {
 
     @GetMapping// 일정 페이징. 페이지네이션해서 파라미터에따라 일정들을 원하는 페이지에 원하는 갯수만큼 요청
     public ResponseEntity<Page<PageScheduleResponseDto>> schedulePage(
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0") int page, //mysql의 offset 시작은 0번임
             @RequestParam(defaultValue = "10") int size
     ){
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updateDate"));

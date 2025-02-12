@@ -1,11 +1,14 @@
 package com.example.schedule_jpa.controller;
 
+import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.dto.userDto.UserRequestDto;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
+import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.groups.LoginGroup;
 import com.example.schedule_jpa.groups.SaveGroup;
 import com.example.schedule_jpa.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,12 +35,13 @@ public class UserController {
         return new ResponseEntity<>(findUser, HttpStatus.OK);
     }
 
-    @PatchMapping("{id}")// 유저 수정
+    @PatchMapping("/update")// 유저 수정
     public ResponseEntity<UserResponseDto> updateUser(
-            @PathVariable Long id,
+            HttpSession session,
             @Valid @RequestBody (required = false) UserRequestDto requestDto
     ){
-        UserResponseDto updateUser = userService.updateUser(id, requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        UserResponseDto updateUser = userService.updateUser(user.getId(), requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
