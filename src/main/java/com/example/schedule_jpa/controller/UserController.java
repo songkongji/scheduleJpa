@@ -41,13 +41,14 @@ public class UserController {
             @Valid @RequestBody (required = false) UserRequestDto requestDto
     ){
         User user = (User) session.getAttribute(Const.LOGIN_USER);
-        UserResponseDto updateUser = userService.updateUser(user.getId(), requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
+        UserResponseDto updateUser = userService.updateUser(user, requestDto.getName(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")// 유저 삭제
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestBody UserRequestDto requestDto){
-        userService.deleteUser(id, requestDto.getPassword());
+    @DeleteMapping("/delete")// 유저 삭제
+    public ResponseEntity<Void> deleteUser(HttpSession session, @RequestBody UserRequestDto requestDto){
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        userService.deleteUser(user.getId(), requestDto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

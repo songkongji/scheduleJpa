@@ -4,7 +4,6 @@ import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.config.PasswordEncoder;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
-import com.example.schedule_jpa.exception.CustomException;
 import com.example.schedule_jpa.exception.EmailAlreadyExistException;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Optional;
 
 @Slf4j
@@ -43,12 +41,14 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
-    public UserResponseDto updateUser(Long id, String name, String email, String password) {
-        log.info("서비스까지 넘어왔다.");
-        User findUser = userRepository.findByIdOrElseThrow(id);
-        log.info("레포지터리 통과했다.");
-        findUser.setUserName(name);
-        findUser.setEmail(email);
+    public UserResponseDto updateUser(User user, String name, String email, String password) {
+        user.setUserName(name);
+        user.setEmail(email);
+
+        if (email.equals(user.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다.");
+        }
+
 
 //        if(name != null){
 //            findUser.setUserName(name);
@@ -62,14 +62,14 @@ public class UserService {
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 //        }//requestDto 단계에서 null은 불가능하게 해놔도 위와 같은 검증 로직이 필요한가?
 
-        boolean matches = passwordEncoder.matches(password, findUser.getPassword());
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
 
         if(!matches){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        userRepository.save(findUser);
-        return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
+        userRepository.save(user);
+        return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
     public void deleteUser(Long id, String password) {
