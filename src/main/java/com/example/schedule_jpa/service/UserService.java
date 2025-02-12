@@ -4,6 +4,8 @@ import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.config.PasswordEncoder;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
+import com.example.schedule_jpa.exception.CustomException;
+import com.example.schedule_jpa.exception.EmailAlreadyExistException;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -21,6 +25,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserResponseDto save(String name, @Email String email, String password) {
+        Optional<User> findUser = userRepository.findByEmail(email);
+
+        if(findUser.isPresent()){
+            throw new EmailAlreadyExistException("이미 사용 중인 이메일입니다.");
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         User user = new User(name, email, encodedPassword);
         User save = userRepository.save(user);

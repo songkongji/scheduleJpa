@@ -64,5 +64,4 @@ public class ScheduleController {
         Page<PageScheduleResponseDto> schedulePage = scheduleService.getSchedulePage(pageable);
         return new ResponseEntity<>(schedulePage, HttpStatus.OK);
     }
-
 }
