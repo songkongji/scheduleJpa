@@ -43,12 +43,13 @@ public class UserService {
 
     public UserResponseDto updateUser(User user, String name, String email, String password) {
         user.setUserName(name);
-        user.setEmail(email);
 
-        if (email.equals(user.getEmail())) {
+        Optional<User> findUser = userRepository.findByEmail(email);    //이미 같은 이메일로 가입한 다른 유저가 있는가?
+        if (findUser.isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재하는 이메일 입니다.");
+        } else{
+            user.setEmail(email);
         }
-
 
 //        if(name != null){
 //            findUser.setUserName(name);
@@ -65,7 +66,7 @@ public class UserService {
         boolean matches = passwordEncoder.matches(password, user.getPassword());
 
         if(!matches){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못됐습니다.");
         }
 
         userRepository.save(user);
