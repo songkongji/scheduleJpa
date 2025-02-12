@@ -8,7 +8,6 @@ import com.example.schedule_jpa.exception.EmailAlreadyExistException;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDto save(String name, @Email String email, String password) {
+    public UserResponseDto save(String name, String email, String password) {
         Optional<User> findUser = userRepository.findByEmail(email);
 
         if(findUser.isPresent()){
@@ -41,7 +40,7 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
-    public UserResponseDto updateUser(Long id, String name, @Email String email, String password) {
+    public UserResponseDto updateUser(Long id, String name, String email, String password) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
         if(name != null){
@@ -74,7 +73,7 @@ public class UserService {
         userRepository.delete(findUser);
     }
 
-    public UserResponseDto login(@Email String email, String password, HttpServletRequest request) {
+    public UserResponseDto login(String email, String password, HttpServletRequest request) {
         User findUser = userRepository.findByEmailOrElseThrow(email);
 
         if(findUser != null){   //find 할때 이미 이메일은 검증됨
