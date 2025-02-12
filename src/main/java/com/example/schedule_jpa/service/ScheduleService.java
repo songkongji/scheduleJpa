@@ -6,15 +6,12 @@ import com.example.schedule_jpa.entity.Schedule;
 import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.ScheduleRepository;
 import com.example.schedule_jpa.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -45,7 +42,7 @@ public class ScheduleService {
     public void deleteSchedule(Long id, Long userId) {
         Schedule findById = scheduleRepository.findByIdOrElseThrow(id);
 
-        if(userId != findById.getUser().getId()){ //일정을 만든 본인만 해당 일정 삭제
+        if(userId.equals(findById.getUser().getId())){ //일정을 만든 본인만 해당 일정 삭제
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

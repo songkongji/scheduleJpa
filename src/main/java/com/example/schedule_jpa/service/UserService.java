@@ -4,7 +4,6 @@ import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.config.PasswordEncoder;
 import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.entity.User;
-import com.example.schedule_jpa.exception.CustomException;
 import com.example.schedule_jpa.exception.EmailAlreadyExistException;
 import com.example.schedule_jpa.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,6 +87,8 @@ public class UserService {
 
         HttpSession session = request.getSession();
         session.setAttribute(Const.LOGIN_USER, findUser);
+        //findUser.getId()의 경고는 NPE 가능성 때문에 IDE에서 보내는 경고이다.
+        //하지만 이미 위에서 findUser 변수는 레포지터리에서 null일 경우 오류 처리가 되기 때문에 경고를 신경 쓰지 않아도 된다.
         return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
 

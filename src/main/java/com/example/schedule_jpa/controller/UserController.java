@@ -5,7 +5,6 @@ import com.example.schedule_jpa.dto.userDto.UserResponseDto;
 import com.example.schedule_jpa.groups.LoginGroup;
 import com.example.schedule_jpa.groups.SaveGroup;
 import com.example.schedule_jpa.service.UserService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
