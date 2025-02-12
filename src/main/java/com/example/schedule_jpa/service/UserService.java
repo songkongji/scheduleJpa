@@ -43,6 +43,10 @@ public class UserService {
     public UserResponseDto updateUser(Long id, String name, String email, String password) {
         User findUser = userRepository.findByIdOrElseThrow(id);
 
+        if(!findUser.getId().equals(id)){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
         if(name != null){
             findUser.setUserName(name);
         }
@@ -53,7 +57,7 @@ public class UserService {
 
         if (name == null && email == null || password == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        }//requestDto 단계에서 null은 불가능하게 해놔도 위와 같은 검증 로직이 필요한가?
 
         if(!password.equals(findUser.getPassword())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

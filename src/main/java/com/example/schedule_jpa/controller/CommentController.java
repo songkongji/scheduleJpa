@@ -22,20 +22,20 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping
+    @PostMapping    //댓글 생성. 세션 가져와서 생성한 유저 정보 등록 
     public ResponseEntity<CommentResponseDto> save(@Valid @RequestBody CommentRequestDto requestDto, HttpSession session){
         User user = (User) session.getAttribute(Const.LOGIN_USER);
         CommentResponseDto save = commentService.save(user.getId(), requestDto.getScheduleId(), requestDto.getContents());
         return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{scheduleId}")
+    @GetMapping("/{scheduleId}")    //댓글 목록 조회. 일정 번호를 통해 해당 일정의 모든 댓글 조회
     public ResponseEntity<List<CommentResponseDto>> findByScheduleId(@PathVariable Long scheduleId){
         List<CommentResponseDto> findComment = commentService.findByScheduleId(scheduleId);
         return new ResponseEntity<>(findComment, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")//id는 댓글의 고유식별자이다. (일정 하나에 댓글 여러개 달면 해당 id로 무슨 댓글 수정할건지 찾음)
+    @PutMapping("/{id}")//댓글 수정. 세션 가져와서 본인의 댓글만 수정 가능
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long id,
             @Valid @RequestBody UpdateCommentRequestDto requestDto,
@@ -46,7 +46,7 @@ public class CommentController {
         return new ResponseEntity<>(update, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") //댓글 삭제 세션 가져와서 본인의 댓글만 삭제 가능
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long id,
             @Valid @RequestParam Long scheduleId,
