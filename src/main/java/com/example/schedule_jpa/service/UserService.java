@@ -73,10 +73,14 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
-    public void deleteUser(User user, String password) {
-        if(passwordEncoder.matches(password, user.getPassword()))
+    public void deleteUser(HttpSession session, String password) {
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        if(passwordEncoder.matches(password, user.getPassword())) {
             userRepository.delete(user);
-        else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못됐다");
+            session.invalidate();
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 잘못됐다");
+        }
     }
 
     public UserResponseDto login(String email, String password, HttpServletRequest request) {
