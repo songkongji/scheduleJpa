@@ -41,6 +41,7 @@ public class UserService {
         return new UserResponseDto(user.getId(), user.getUserName(), user.getEmail());
     }
 
+
     public UserResponseDto updateUser(User user, String name, String email, String password) {
         user.setUserName(name);
 

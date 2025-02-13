@@ -34,8 +34,7 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> findByScheduleId(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId); //여기서 존재하는 일정인지 검증
-        List<Comment> comments = commentRepository.findAllByScheduleId(schedule.getId()); //검증 된 id 값을 넣음
+        List<Comment> comments = commentRepository.findAllByScheduleId(scheduleId); //검증 된 id 값을 넣음
         return comments.stream()
                 .map(comment -> new CommentResponseDto(
                         comment.getId(),
@@ -47,11 +46,10 @@ public class CommentService {
     }
 
     public CommentResponseDto update(Long id, Long userId, String contents, Long scheduleId) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
 
         verifyUser(userId, comment.getUser().getId());
-        validComment(comment.getSchedule().getId(), schedule.getId());
+        validComment(comment.getSchedule().getId(), scheduleId);
 
         comment.setContents(contents);
         commentRepository.save(comment);
@@ -59,11 +57,10 @@ public class CommentService {
     }
 
     public void delete(Long id, Long scheduleId, Long userId) {
-        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
         Comment comment = commentRepository.findByIdOrElseThrow(id);
 
         verifyUser(userId, comment.getUser().getId());
-        validComment(comment.getSchedule().getId(), schedule.getId());
+        validComment(comment.getSchedule().getId(), scheduleId);
 
         commentRepository.delete(comment);
     }
