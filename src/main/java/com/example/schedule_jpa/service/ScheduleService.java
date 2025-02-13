@@ -7,12 +7,14 @@ import com.example.schedule_jpa.entity.User;
 import com.example.schedule_jpa.repository.ScheduleRepository;
 import com.example.schedule_jpa.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ScheduleService {
@@ -42,7 +44,7 @@ public class ScheduleService {
     public void deleteSchedule(Long id, Long userId) {
         Schedule findById = scheduleRepository.findByIdOrElseThrow(id);
 
-        if(userId.equals(findById.getUser().getId())){ //일정을 만든 본인만 해당 일정 삭제
+        if(!userId.equals(findById.getUser().getId())){ //일정을 만든 본인만 해당 일정 삭제
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

@@ -101,10 +101,4 @@ public class UserService {
         //하지만 이미 위에서 findUser 변수는 레포지터리에서 null일 경우 오류 처리가 되기 때문에 경고를 신경 쓰지 않아도 된다.
         return new UserResponseDto(findUser.getId(), findUser.getUserName(), findUser.getEmail());
     }
-
-    public void logout(HttpSession session) {
-        if(session != null){
-            session.invalidate();
-        }
-    }
 }

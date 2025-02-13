@@ -60,9 +60,12 @@ public class UserController {
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
 
-    @PostMapping("/logout") // 로그 아웃. 세션이 존재하면 세션 정보를 서비스 단계에 넘김
+    @PostMapping("/logout") // 로그 아웃.
     public ResponseEntity<Void> logout(HttpServletRequest request){
-        userService.logout(request.getSession(false));
+        HttpSession session = request.getSession(false);
+        if(session != null){
+            session.invalidate();
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
