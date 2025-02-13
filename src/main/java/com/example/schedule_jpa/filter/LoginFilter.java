@@ -2,6 +2,10 @@ package com.example.schedule_jpa.filter;
 
 import com.example.schedule_jpa.Common.Const;
 import com.example.schedule_jpa.exception.CustomException;
+import com.example.schedule_jpa.dto.errorDto.ErrorResponseDto;
+import com.example.schedule_jpa.Common.ErrorType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,15 +33,26 @@ public class LoginFilter implements Filter {
                 HttpSession session = httpRequest.getSession(false);
 
                 if (session == null || session.getAttribute(Const.LOGIN_USER) == null) {
-                    throw new CustomException("로그인 하셈");
+                    throw new CustomException("로그인 하셈", ErrorType.UNAUTHORIZED);
                 }
             }
             chain.doFilter(request, response);
         } catch (CustomException e) {
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpResponse.setContentType("text/plain; charset=UTF-8");//프론트엔드를 위해 json 형식으로 컨텐트 타입 보내주자
+            httpResponse.setContentType("application/json; charset=UTF-8");//프론트엔드를 위해 json 형식으로 컨텐트 타입 보내주자
             httpResponse.setCharacterEncoding("UTF-8");
-            httpResponse.getWriter().write("로그인이 필요하다. " + e.getMessage());
+            ErrorResponseDto errorResponseDto = new ErrorResponseDto(ErrorType.UNAUTHORIZED.getStatus(), ErrorType.UNAUTHORIZED.getCode(), ErrorType.UNAUTHORIZED.getMessage());
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule()); //Jackson이 로컬데이트타임 받게 하기
+            httpResponse.getWriter().write(objectMapper.writeValueAsString(errorResponseDto));
+//            httpResponse.getWriter().write(
+//                    "{\n" +
+//                            "\"status\" : \"UNAUTHORIZED\",\n" +
+//                            "\"message\" : \"" + e.getMessage() + "\",\n" +
+//                            "\"timeStamp\" : \"" + LocalDateTime.now() + "\",\n" +
+//                            "\"path\" : \"" + requestURI + "\"\n" +
+//                            "}"
+//            );
         } catch (Exception e){
             httpResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             httpResponse.setContentType("text/plain; charset=UTF-8");
